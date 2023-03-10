@@ -1,6 +1,10 @@
 A demonstration of `viewModelScope` still being active while the associated
 view is no longer visible, in this case, on the back stack.
 
+Notice that Screen A's ViewModel continues to log when the repo's state is updated,
+even though Screen A is on the back stack. In most cases, this is not the behavior
+you want.
+
 `stateIn()`'s `started` parameter allows you to expose a StateFlow from the ViewModel
 without worrying about unintended collections while on the back stack by using
 `SharingStarted.WhileSubscribed()`. This will stop the collection of the upstream

@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
                 composable(NavKey.B.route) {
                     BScreenRoute(
                         viewModel = viewModel(),
+                        onNavBack = { navController.popBackStack() }
                     )
                 }
             }
@@ -59,7 +61,14 @@ fun AScreen(
 ) {
     Log.d("AScreen", "$stateValue")
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.align(Alignment.Center)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(32.dp)
+        ) {
+            Text(text = "Screen A!", fontSize = 48.sp)
+            Spacer(modifier = Modifier.height(32.dp))
             Text(text = "State: $stateValue")
             Spacer(modifier = Modifier.height(32.dp))
             Button(
@@ -76,21 +85,41 @@ fun AScreen(
 }
 
 @Composable
-fun BScreenRoute(viewModel: BViewModel) {
-    BScreen(stateValue = viewModel.state.collectAsState().value, onButtonClick = viewModel::incrementState)
+fun BScreenRoute(
+    viewModel: BViewModel,
+    onNavBack: () -> Unit
+) {
+    BScreen(
+        stateValue = viewModel.state.collectAsState().value,
+        onIncrementState = viewModel::incrementState,
+        onNavBack = onNavBack
+    )
 }
 
 @Composable
 fun BScreen(
     stateValue: Int,
-    onButtonClick: () -> Unit
+    onNavBack: () -> Unit,
+    onIncrementState: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.align(Alignment.Center)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth()
+                .padding(32.dp)
+        ) {
+            Text(text = "Screen B!", fontSize = 48.sp)
+            Spacer(modifier = Modifier.height(32.dp))
             Text(text = "State: $stateValue")
             Spacer(modifier = Modifier.height(32.dp))
             Button(
-                onClick = onButtonClick
+                onClick = onNavBack
+            ) {
+                Text(text = "Go to A")
+            }
+            Button(
+                onClick = onIncrementState
             ) {
                 Text(text = "Increment State")
             }
